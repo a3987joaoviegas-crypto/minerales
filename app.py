@@ -1,92 +1,77 @@
 import streamlit as st
 
-# 1. Configuração da Página (Sempre a primeira linha)
+# 1. Configuração da Página
 st.set_page_config(page_title="Laboratório Rochal", layout="wide", page_icon="⛏️")
 
 # 2. Inicializar Favoritos
 if 'favs' not in st.session_state:
     st.session_state.favs = []
 
-# --- MENU LATERAL ---
+# --- MENU LATERAL SIMPLIFICADO ---
 st.sidebar.title("⚒️ LAB ROCHAL")
-menu = st.sidebar.radio("Navegação:", [
-    "🏠 Início & Identificador", 
-    "📚 Biblioteca Geológica", 
-    "🌍 Pesquisa Mundial (20 APIs)",
-    "⭐ Favoritos"
-])
+menu = st.sidebar.radio("Navegação:", ["🏠 Laboratório Principal", "⭐ Meus Favoritos"])
 
-# --- PÁGINA 1: INÍCIO & IDENTIFICADOR ---
-if menu == "🏠 Início & Identificador":
-    st.title("Laboratório Rochal")
+# --- PÁGINA PRINCIPAL ---
+if menu == "🏠 Laboratório Principal":
+    st.title("⛏️ Laboratório Rochal")
     
-    st.header("🔬 Identificador Visual")
-    st.write("Arraste aqui a foto da sua rocha ou mineral:")
-    # Componente de Drag and Drop
-    upload = st.file_uploader("Drag a foto file here", type=['jpg', 'png', 'jpeg'])
+    # Seção 1: Tabela Periódica (Visível logo no início)
+    st.header("⚛️ Tabela Periódica Geológica")
+    st.write("Elementos fundamentais da crosta terrestre.")
+    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Periodic_Table_by_Merck.png/1200px-Periodic_Table_by_Merck.png", use_container_width=True)
     
-    if upload:
-        st.image(upload, caption="Amostra em análise no laboratório...", width=300)
-        st.info("🔎 Resultado: Estrutura mineral detectada. Processando composição...")
+    
+
+[Image of the periodic table showing chemical elements]
+
 
     st.divider()
-    
-    st.header("⚛️ Tabela Periódica Geológica")
-    st.write("Os elementos fundamentais que constroem as rochas da Terra:")
-    # Imagem da Tabela Periódica
-    st.image("https://upload.wikimedia.org/wikipedia/commons/4/4d/Periodic_Table_by_Merck.png")
 
-# --- PÁGINA 2: BIBLIOTECA (ROCHAS E MINERAIS JUNTOS) ---
-elif menu == "📚 Biblioteca Geológica":
-    st.title("Biblioteca de Rochas e Minerais")
+    # Seção 2: Biblioteca de Rochas e Minerais
+    st.header("📚 Biblioteca Geológica")
     
-    filtro = st.selectbox("Filtrar por tipo:", ["Todos", "Ígneas", "Metamórficas", "Sedimentares", "Minerais"])
-    
-    # Banco de Dados de Amostras
+    # Banco de dados com imagens estáveis
     itens = [
-        {"nome": "Basalto", "classe": "Ígneas", "pressao": "Baixa (Superfície)", "elementos": "Ferro, Magnésio, Cálcio", "tempo": "Dias", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Basalt_sample.jpg/300px-Basalt_sample.jpg"},
-        {"nome": "Granito", "classe": "Ígneas", "pressao": "Alta (Plutónica)", "elementos": "Silício, Alumínio, Potássio", "tempo": "Milhares de anos", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Granite_Curvaceira_1.jpg/300px-Granite_Curvaceira_1.jpg"},
-        {"nome": "Mármore", "classe": "Metamórficas", "pressao": "Média/Alta", "elementos": "Carbonato de Cálcio", "tempo": "Milhões de anos", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Marble-textures.jpg/300px-Marble-textures.jpg"},
-        {"nome": "Quartzo", "classe": "Minerais", "pressao": "Variável", "elementos": "Dióxido de Silício (SiO2)", "tempo": "Crescimento Lento", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Quartz_Crystal.jpg/300px-Quartz_Crystal.jpg"}
+        {"nome": "Basalto", "classe": "Ígnea", "pressao": "Baixa (Vulcânica)", "elementos": "Fe, Mg, Ca", "tempo": "Rápido", "img": "https://images.unsplash.com/photo-1515462277126-2dd0c162007a?w=600"},
+        {"nome": "Granito", "classe": "Ígnea", "pressao": "Alta (Plutónica)", "elementos": "Si, Al, K", "tempo": "Milhares de anos", "img": "https://images.unsplash.com/photo-1533038595788-da570932e604?w=600"},
+        {"nome": "Mármore", "classe": "Metamórfica", "pressao": "Alta", "elementos": "Carbonato de Cálcio", "tempo": "Milhões de anos", "img": "https://images.unsplash.com/photo-1620215175664-cb9a6f5b6103?w=600"},
+        {"nome": "Quartzo", "classe": "Mineral", "pressao": "Variável", "elementos": "Dióxido de Silício", "tempo": "Crescimento Lento", "img": "https://images.unsplash.com/photo-1567095761054-7a02e69e5c43?w=600"}
     ]
 
-    for i in itens:
-        if filtro == "Todos" or i["classe"] == filtro:
-            with st.container(border=True):
-                col1, col2 = st.columns([1, 2])
-                with col1:
-                    st.image(i["img"], width=200)
-                with col2:
-                    st.subheader(i["nome"])
-                    st.write(f"**Classe:** {i['classe']} | **🔥 Pressão:** {i['pressao']}")
-                    st.write(f"**🧪 Elementos:** {i['elementos']} | **⏳ Tempo:** {i['tempo']}")
-                    if st.button(f"⭐ Guardar {i['nome']}", key=i['nome']):
-                        if i['nome'] not in st.session_state.favs:
-                            st.session_state.favs.append(i['nome'])
-                            st.toast(f"{i['nome']} guardado na mochila!")
-
-# --- PÁGINA 3: PESQUISA MUNDIAL (20 APIs) ---
-elif menu == "🌍 Pesquisa Mundial (20 APIs)":
-    st.title("🌍 Radar Geológico Global")
-    local = st.text_input("Introduza um País ou Região para Pesquisa:")
-    
-    if local:
-        st.write(f"Conectando a 20 APIs geográficas para pesquisar: **{local}**")
-        apis = [
-            "USGS", "Mindat", "OneGeology", "Macrostrat", "EarthChem", "BGS", "BRGM", "GSA", "OpenGeology", "Deep-Time",
-            "CPRM (Brasil)", "LNEG (Portugal)", "ChinaGeo", "AusGeoscience", "GSC", "PANGAEA", "GeoRef", "Smithsonian", "IRIS", "MineralogyDB"
-        ]
+    # Exibição em Colunas Grandes
+    for i in range(0, len(itens), 2):
+        col1, col2 = st.columns(2)
         
-        cols = st.columns(2)
-        for idx, api in enumerate(apis):
-            cols[idx % 2].write(f"✅ Conectado: {api}")
-        st.success(f"Busca finalizada! Dados de {local} integrados com sucesso.")
+        # Coluna 1
+        with col1:
+            st.subheader(f"🆔 {itens[i]['nome']}")
+            st.image(itens[i]["img"], use_container_width=True)
+            st.write(f"**Classe:** {itens[i]['classe']} | **🔥 Pressão:** {itens[i]['pressao']}")
+            st.write(f"**🧪 Química:** {itens[i]['elementos']}")
+            st.write(f"**⏳ Tempo:** {itens[i]['tempo']}")
+            if st.button(f"⭐ Guardar {itens[i]['nome']}", key=itens[i]['nome']):
+                if itens[i]['nome'] not in st.session_state.favs:
+                    st.session_state.favs.append(itens[i]['nome'])
+                    st.success("Adicionado aos favoritos!")
 
-# --- PÁGINA 4: FAVORITOS ---
-elif menu == "⭐ Favoritos":
-    st.title("⭐ Minha Mochila Geológica")
+        # Coluna 2
+        if i+1 < len(itens):
+            with col2:
+                st.subheader(f"🆔 {itens[i+1]['nome']}")
+                st.image(itens[i+1]["img"], use_container_width=True)
+                st.write(f"**Classe:** {itens[i+1]['classe']} | **🔥 Pressão:** {itens[i+1]['pressao']}")
+                st.write(f"**🧪 Química:** {itens[i+1]['elementos']}")
+                st.write(f"**⏳ Tempo:** {itens[i+1]['tempo']}")
+                if st.button(f"⭐ Guardar {itens[i+1]['nome']}", key=itens[i+1]['nome']):
+                    if itens[i+1]['nome'] not in st.session_state.favs:
+                        st.session_state.favs.append(itens[i+1]['nome'])
+                        st.success("Adicionado aos favoritos!")
+
+# --- PÁGINA 2: FAVORITOS ---
+elif menu == "⭐ Meus Favoritos":
+    st.title("⭐ Minha Coleção Particular")
     if st.session_state.favs:
         for f in st.session_state.favs:
-            st.write(f"💎 {f}")
+            st.markdown(f"### 💎 {f}")
     else:
-        st.write("A sua coleção está vazia. Explore a biblioteca para coletar amostras!")
+        st.write("A sua mochila está vazia. Explore o laboratório para colecionar rochas!")
