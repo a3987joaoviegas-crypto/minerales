@@ -7,13 +7,11 @@ st.set_page_config(page_title="Laboratório Rochal", layout="wide", page_icon="�
 st.markdown("""
     <style>
     .stApp {
-        background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), 
-                    url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=2000');
-        background-size: cover;
+        background-color: #1a1a1a;
         color: #f0f0f0;
     }
     .id-card {
-        background-color: rgba(30, 30, 30, 0.9);
+        background-color: rgba(45, 45, 45, 0.9);
         border: 2px solid #8B4513;
         border-radius: 15px;
         padding: 20px;
@@ -22,7 +20,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_stdio=True)
 
-# Sistema de Favoritos (Igual ao MundoVivo)
+# Sistema de Favoritos
 if 'favoritos' not in st.session_state:
     st.session_state.favoritos = []
 
@@ -31,7 +29,7 @@ with st.sidebar:
     st.title("⚒️ Laboratório Rochal")
     menu = st.radio("Navegação:", [
         "🏠 Início", 
-        "🔬 Identificador de Rochas", 
+        "🔬 Identificador", 
         "📚 Manual de Rochas", 
         "💎 Manual de Minerais",
         "⚛️ Tabela Periódica", 
@@ -62,38 +60,35 @@ def criar_cartao(nome, pressao, elementos, tempo, tipo, img_url):
 if menu == "🏠 Início":
     st.title("Bem-vindo às Profundezas!")
     st.write("Explora a geologia mundial neste laboratório digital.")
-    
+    st.image("https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1000", caption="Interior do Laboratório")
 
-elif menu == "🔬 Identificador de Rochas":
+elif menu == "🔬 Identificador":
     st.header("📸 Identificação de Campo")
     upload = st.file_uploader("Suba uma foto da sua rocha:", type=['jpg', 'png'])
     if upload:
         st.image(upload, width=300)
-        st.info("Analisando densidade e brilho... Esta amostra parece ser de origem vulcânica.")
+        st.info("Analisando dados geológicos... Amostra compatível com formações ígneas.")
 
 elif menu == "📚 Manual de Rochas":
     st.header("🪨 Manual de Rochas")
-    criar_cartao("Basalto", "Baixa (Superficial)", "Silício, Magnésio, Ferro", "Dias a meses", "Ígnea Extrusiva", "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Basalt_sample.jpg/300px-Basalt_sample.jpg")
+    criar_cartao("Basalto", "Baixa (Vulcânica)", "Silício, Magnésio, Ferro", "Dias a meses", "Ígnea Extrusiva", "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Basalt_sample.jpg/300px-Basalt_sample.jpg")
     criar_cartao("Mármore", "Alta", "Carbonato de Cálcio", "Milhares de anos", "Metamórfica", "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Marble-textures.jpg/300px-Marble-textures.jpg")
 
 elif menu == "💎 Manual de Minerais":
     st.header("💎 Manual de Minerais")
-    criar_cartao("Quartzo", "Variável", "SiO2 (Sílica)", "Lento (Crescimento de Cristais)", "Mineral Silicato", "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Quartz_Crystal.jpg/300px-Quartz_Crystal.jpg")
-    criar_cartao("Ouro Nativo", "Variável", "Au (Ouro Puro)", "Geológico (Veios Hidrotérmicos)", "Metal Nativo", "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Gold-bearing_quartz.jpg/300px-Gold-bearing_quartz.jpg")
+    criar_cartao("Quartzo", "Variável", "SiO2 (Sílica)", "Lento", "Mineral Silicato", "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Quartz_Crystal.jpg/300px-Quartz_Crystal.jpg")
+    criar_cartao("Pirita", "Média", "FeS2 (Ferro e Enxofre)", "Milhares de anos", "Sulfeto", "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Pyrite_from_Ambasaguas_Spain.jpg/300px-Pyrite_from_Ambasaguas_Spain.jpg")
 
 elif menu == "⚛️ Tabela Periódica":
     st.header("⚛️ Composição Química da Terra")
+    st.write("Elementos essenciais para a formação de minerais.")
     st.image("https://upload.wikimedia.org/wikipedia/commons/4/4d/Periodic_Table_by_Merck.png")
-    
-
-[Image of the periodic table showing chemical elements]
-
 
 elif menu == "🌍 Pesquisa Global (10 APIs)":
     st.header("🔍 Motor de Busca Geológico")
     pais = st.text_input("País ou Região para pesquisar:")
     if pais:
-        apis = ["USGS (EUA)", "Mindat", "OneGeology", "Macrostrat", "EarthChem", "BGS", "BRGM", "GSA", "OpenGeology", "Deep-Time Data"]
+        apis = ["USGS", "Mindat", "OneGeology", "Macrostrat", "EarthChem", "BGS", "BRGM", "GSA", "OpenGeology", "Deep-Time Data"]
         for api in apis:
             st.write(f"✅ Consultando {api}... Dados de **{pais}** obtidos.")
         st.success(f"Busca finalizada para {pais}!")
@@ -104,4 +99,4 @@ elif menu == "⭐ Meus Favoritos":
         for fav in st.session_state.favoritos:
             st.write(f"- {fav}")
     else:
-        st.write("Nenhuma rocha favoritada.")
+        st.write("Ainda não tens favoritos.")
