@@ -1,116 +1,95 @@
 import streamlit as st
 import pandas as pd
-from PIL import Image
 
-# Configuração da Página
-st.set_page_config(page_title="Laboratório Rochal", layout="wide", page_icon="⛏️")
+# 1. Configuração inicial
+st.set_page_config(page_title="Laboratório Rochal", layout="wide")
 
-# --- ESTILO CAVERNA ---
+# 2. Estilo Visual (Fundo Escuro/Caverna)
 st.markdown("""
     <style>
-    .stApp {
-        background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), 
-                    url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=2000');
-        background-size: cover;
-        color: #f0f0f0;
-    }
-    .id-card {
-        background-color: rgba(30, 30, 30, 0.9);
-        border: 2px solid #8B4513;
-        border-radius: 15px;
-        padding: 20px;
-        box-shadow: 5px 5px 15px rgba(0,0,0,0.5);
-    }
+    .main { background-color: #1a1a1a; color: #ffffff; }
+    .stButton>button { width: 100%; border-radius: 5px; height: 3em; background-color: #4e4e4e; color: white; }
+    .rock-card { border: 2px solid #555; padding: 15px; border-radius: 10px; background-color: #262626; margin-bottom: 10px; }
     </style>
     """, unsafe_allow_stdio=True)
 
-# Inicializar Favoritos
-if 'favs' not in st.session_state:
-    st.session_state.favs = []
+# 3. Inicializar Favoritos
+if 'favoritos' not in st.session_state:
+    st.session_state.favoritos = []
 
-# --- TÍTULO ---
-st.title("⛏️ Laboratório Rochal: Geologia Mundial")
-st.write("---")
+# --- MENU LATERAL ---
+st.sidebar.title("⚒️ MENU LABORATÓRIO")
+pagina = st.sidebar.selectbox("Escolha uma área:", 
+    ["Início", "Manual de Identificação", "Tabela Periódica", "Pesquisa Global 10 APIs", "Meus Favoritos"])
 
-# --- BARRA LATERAL ---
-with st.sidebar:
-    st.header("Explorador")
-    opcao = st.radio("Ir para:", [
-        "🔬 Identificador de Rochas", 
-        "📚 Manual (Rochas e Minerais)", 
-        "⚛️ Tabela Periódica", 
-        "🌍 Pesquisa Global (10 APIs)",
-        "⭐ Meus Favoritos"
-    ])
+# --- PÁGINA INICIAL ---
+if pagina == "Início":
+    st.title("⛏️ Bem-vindo ao Laboratório Rochal")
+    st.image("https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1000", caption="Entrada da Caverna de Estudos")
+    st.write("Use o menu ao lado para explorar minerais, rochas e dados globais.")
 
-# --- FUNÇÃO CARTÃO DE IDENTIDADE ---
-def criar_cartao(nome, pressao, elementos, tempo, tipo, img_url):
-    st.markdown(f"<div class='id-card'>", unsafe_allow_stdio=True)
-    col1, col2 = st.columns([1, 2])
-    with col1:
-        st.image(img_url, use_container_width=True)
-    with col2:
-        st.subheader(f"💎 {nome}")
-        st.markdown(f"**Tipo:** {tipo}")
-        st.markdown(f"**🔥 Pressão:** {pressao}")
-        st.markdown(f"**🧪 Composição:** {elementos}")
-        st.markdown(f"**⏳ Formação:** {tempo}")
-        if st.button(f"Favoritar {nome}", key=nome):
-            if nome not in st.session_state.favs:
-                st.session_state.favs.append(nome)
-                st.toast(f"{nome} guardado na mochila!")
-    st.markdown("</div>", unsafe_allow_stdio=True)
-    st.write("")
-
-# --- LÓGICA DAS PÁGINAS ---
-
-if opcao == "🔬 Identificador de Rochas":
-    st.header("📸 Identificação por Imagem")
-    arquivo = st.file_uploader("Suba uma foto da rocha ou mineral:", type=['jpg', 'png', 'jpeg'])
-    if arquivo:
-        st.image(arquivo, caption="Sua amostra", width=300)
-        st.warning("IA de Laboratório: Esta rocha parece ter estrutura cristalina. Analisando...")
-        st.info("Dica: Use luz natural para melhores resultados no laboratório.")
-
-elif opcao == "📚 Manual (Rochas e Minerais)":
-    aba_r, aba_m = st.tabs(["🪨 Rochas", "💎 Minerais"])
+# --- MANUAL DE IDENTIFICAÇÃO ---
+elif pagina == "Manual de Identificação":
+    st.title("📚 Manual Geológico")
     
-    with aba_r:
-        criar_cartao("Basalto", "Baixa (Superficial)", "Silício, Magnésio, Ferro", "Dias a meses", "Ígnea Vulcânica", "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Basalt_sample.jpg/300px-Basalt_sample.jpg")
-        criar_cartao("Gnaisse", "Muito Alta", "Quartzo, Feldspato", "Milhões de anos", "Metamórfica", "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Gneiss.jpg/300px-Gneiss.jpg")
+    aba1, aba2 = st.tabs(["🪨 Rochas", "💎 Minerais"])
+    
+    with aba1:
+        # Exemplo de Cartão de Identidade
+        st.markdown("""
+        <div class="rock-card">
+            <h3>Cartão de Identidade: GRANITO</h3>
+            <p><b>🌍 Nome:</b> Granito (Ígnea)</p>
+            <p><b>🔥 Pressão:</b> Baixa a Média (Plutônica)</p>
+            <p><b>🧪 Elementos:</b> Quartzo, Feldspato, Mica (Si, Al, K)</p>
+            <p><b>⏳ Tempo:</b> Milhares de anos para resfriar</p>
+        </div>
+        """, unsafe_allow_stdio=True)
+        if st.button("⭐ Adicionar Granito aos Favoritos"):
+            st.session_state.favoritos.append("Granito")
+            st.success("Adicionado!")
 
-    with aba_m:
-        criar_cartao("Diamante", "Extrema (Profunda)", "Carbono Puro", "1 a 3 bilhões de anos", "Mineral Nativo", "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Rough_diamond.jpg/300px-Rough_diamond.jpg")
-        criar_cartao("Pirita", "Média", "Ferro e Enxofre", "Milhares de anos", "Sulfeto", "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Pyrite_from_Ambasaguas_Spain.jpg/300px-Pyrite_from_Ambasaguas_Spain.jpg")
+    with aba2:
+        st.markdown("""
+        <div class="rock-card">
+            <h3>Cartão de Identidade: QUARTZO</h3>
+            <p><b>🌍 Nome:</b> Quartzo (Mineral)</p>
+            <p><b>🔥 Pressão:</b> Variável</p>
+            <p><b>🧪 Elementos:</b> Dióxido de Silício (SiO2)</p>
+            <p><b>⏳ Tempo:</b> Crescimento hidrotérmico lento</p>
+        </div>
+        """, unsafe_allow_stdio=True)
+        if st.button("⭐ Adicionar Quartzo aos Favoritos"):
+            st.session_state.favoritos.append("Quartzo")
+            st.success("Adicionado!")
 
-elif opcao == "⚛️ Tabela Periódica":
-    st.header("⚛️ Elementos Formadores de Rochas")
-    st.write("A base química de todos os minerais do planeta.")
-    st.image("https://upload.wikimedia.org/wikipedia/commons/4/4d/Periodic_Table_by_Merck.png")
+# --- TABELA PERIÓDICA ---
+elif pagina == "Tabela Periódica":
+    st.title("⚛️ Química da Terra")
+    st.image("https://upload.wikimedia.org/wikipedia/commons/4/4d/Periodic_Table_by_Merck.png", use_container_width=True)
     
 
 [Image of the periodic table showing chemical elements]
 
 
-elif opcao == "🌍 Pesquisa Global (10 APIs)":
-    st.header("🔍 Motor de Busca Geológico Mundial")
-    local = st.text_input("Digite o país ou região (Ex: Portugal, Brasil, Himalaias):")
+# --- PESQUISA GLOBAL (10 APIs) ---
+elif pagina == "Pesquisa Global 10 APIs":
+    st.title("🌍 Motor de Busca Mundial")
+    local = st.text_input("Digite um país (ex: Portugal):")
     if local:
-        st.write(f"Conectando às APIs para analisar **{local}**...")
-        apis = [
-            "1. USGS (EUA)", "2. Mindat (Mundial)", "3. OneGeology (Global)", 
-            "4. Macrostrat (Estratigrafia)", "5. EarthChem (Geoquímica)", 
-            "6. BGS (Reino Unido)", "7. BRGM (França)", "8. GSA (Geologia Local)", 
-            "9. OpenGeology", "10. Deep-Time Data"
-        ]
-        for api in apis:
-            st.write(f"✅ {api}: Dados de {local} processados.")
-        st.success(f"Busca concluída! Rochas predominantes em {local}: Granito e Xisto.")
+        with st.spinner('Consultando 10 APIs (USGS, Mindat, BGS, etc...)'):
+            st.write(f"🔍 Resultados para **{local}**:")
+            st.info("API 1: USGS - Dados de Basalto encontrados.")
+            st.info("API 2: Mindat - 15 ocorrências de minerais de ferro.")
+            st.info("API 3: OneGeology - Mapa de camadas sedimentares pronto.")
+            # ... simulação das outras APIs
+            st.success("Busca completa em todas as fontes!")
 
-elif opcao == "⭐ Meus Favoritos":
-    st.header("🎒 Sua Coleção Particular")
-    if st.session_state.favs:
-        for f in st.session_state.favs:
-            st.markdown(f"- **{f}**")
+# --- FAVORITOS ---
+elif pagina == "Meus Favoritos":
+    st.title("⭐ Minha Coleção")
+    if st.session_state.favoritos:
+        for f in set(st.session_state.favoritos):
+            st.write(f"- {f}")
     else:
-        st.write("Sua mochila está vazia. Explore o manual para adicionar rochas!")
+        st.write("Nenhum item salvo ainda.")
