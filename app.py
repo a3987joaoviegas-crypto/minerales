@@ -33,7 +33,7 @@ base_dados = [
 ]
 
 # Exibição dos itens filtrados
-for r em base_dados:
+for r in base_dados:
     if classe_alvo == "Todas" ou r["classe"] == classe_alvo:
         with st.container(border=True):
             col1, col2 = st.columns([1, 2])
