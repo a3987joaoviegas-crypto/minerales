@@ -46,7 +46,7 @@ for r in base_dados:
                 st.write(f"**Tempo de Formação**: {r['tempo']}")
                 
                 if st.button(f"⭐ Guardar {r['nome']}", key=r['nome']):
-                    if r['nome'] não em st.session_state.colecao:
+                    if r['nome'] not in st.session_state.colecao:
                         st.session_state.colecao.append(r['nome'])
                         st.toast(f"{r['nome']} guardado!")
 
