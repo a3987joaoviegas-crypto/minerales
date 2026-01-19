@@ -1,58 +1,57 @@
 import streamlit as st
 
-# 1. Configuração da página
-st.set_page_config(page_title="Laboratório Rochal", layout="wide")
+st.set_page_config(page_title="Mundo Rochal", layout="wide")
 
-# Inicializar a coleção na memória
-if 'colecao' not in st.session_state:
-    st.session_state.colecao = []
+# Inicializar favoritos
+if 'favoritos' not in st.session_state:
+    st.session_state.favoritos = []
 
-st.title("⚒️ Laboratório Rochal")
+# Navegação entre Telas
+tela = st.sidebar.radio("Ir para:", ["Tela Principal", "Laboratório Rochal", "Favoritos"])
 
-# 2. TABELA PERIÓDICA NO TOPO
-st.header("⚛️ Tabela Periódica Geológica")
-st.write("Elementos químicos fundamentais que constituem as rochas e minerais.")
-# Link estável para a imagem da tabela
-st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Periodic_Table_by_Merck.png/1200px-Periodic_Table_by_Merck.png", use_container_width=True)
+# --- TELA PRINCIPAL: EXPLORAÇÃO E REGIÕES ---
+if tela == "Tela Principal":
+    st.title("🌍 Mundo Rochal: Exploração")
+    st.write("Explore as rochas por regiões e classes, tal como no Mundo Vivo.")
+    
+    col1, col2 = st.columns([2, 1])
+    with col1:
+        st.subheader("Mapa Geológico Global")
+        st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/World_geology_map_full.png/1200px-World_geology_map_full.png", caption="Distribuição Global de Rochas")
+    
+    with col2:
+        st.subheader("Biblioteca por Regiões")
+        regiao = st.selectbox("Escolha uma Região:", ["Europa", "América do Sul", "África", "Ásia", "Oceânia"])
+        # Aqui podes listar rochas específicas da região escolhida
 
-st.divider()
+# --- LABORATÓRIO ROCHAL: ANÁLISE E PESQUISA ---
+elif tela == "Laboratório Rochal":
+    st.title("⚒️ Laboratório Rochal")
+    
+    st.subheader("⚛️ Referência Química")
+    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Periodic_Table_by_Merck.png/1200px-Periodic_Table_by_Merck.png")
+    
+    st.divider()
+    
+    st.subheader("🔍 Pesquisa Global (Filtro Geo-Rigoroso)")
+    busca = st.text_input("Escreve o nome da rocha (ex: Obsidian, Basalt):")
+    
+    if busca:
+        # Filtro técnico automático para evitar imagens irrelevantes nas APIs
+        query = f"{busca} rock mineral specimen geology"
+        st.write(f"Resultados técnicos para: **{busca}**")
+        
+        # Exemplo de 3 das 20 APIs com filtro rígido
+        c1, c2, c3 = st.columns(3)
+        c1.link_button("Mindat (Fotos Reais)", f"https://www.mindat.org/search.php?search={query}")
+        c2.link_button("Smithsonian (Museu)", f"https://collections.nmnh.si.edu/search/minerals/?q={query}")
+        c3.link_button("WebMineral (Dados)", f"http://www.webmineral.com/search.php?search={query}")
 
-# 3. BIBLIOTECA E IDENTIFICADOR POR CLASSES
-st.header("📚 Biblioteca e Identificador")
-
-# Seletor de Classe Geológica
-classe_alvo = st.selectbox("Escolha a Classe:", 
-                          ["Todas", "Rochas Ígneas", "Rochas Metamórficas", "Rochas Sedimentares", "Minerais"])
-
-# Dados (Rochas e Minerais juntos na mesma lista)
-base_dados = [
-    {"nome": "Basalto", "classe": "Rochas Ígneas", "compo": "Ferro e Magnésio", "tempo": "Dias", "img": "https://images.unsplash.com/photo-1515462277126-2dd0c162007a?w=400"},
-    {"nome": "Mármore", "classe": "Rochas Metamórficas", "compo": "Carbonato de Cálcio", "tempo": "Milhões de anos", "img": "https://images.unsplash.com/photo-1620215175664-cb9a6f5b6103?w=400"},
-    {"nome": "Arenito", "classe": "Rochas Sedimentares", "compo": "Silício", "tempo": "Milhares de anos", "img": "https://images.unsplash.com/photo-1590218121117-0824961547a4?w=400"},
-    {"nome": "Quartzo", "classe": "Minerais", "compo": "Dióxido de Silício", "tempo": "Lento", "img": "https://images.unsplash.com/photo-1567095761054-7a02e69e5c43?w=400"}
-]
-
-# Exibição dos itens filtrados
-for r in base_dados:
-    if classe_alvo == "Todas" or r["classe"] == classe_alvo:
-        with st.container(border=True):
-            col1, col2 = st.columns([1, 2])
-            with col1:
-                st.image(r["img"], use_container_width=True)
-            with col2:
-                st.subheader(r["nome"])
-                st.write(f"**Classe**: {r['classe']}")
-                st.write(f"**Composição**: {r['compo']}")
-                st.write(f"**Tempo de Formação**: {r['tempo']}")
-                
-                if st.button(f"⭐ Guardar {r['nome']}", key=r['nome']):
-                    if r['nome'] not in st.session_state.colecao:
-                        st.session_state.colecao.append(r['nome'])
-                        st.toast(f"{r['nome']} guardado!")
-
-st.divider()
-
-# 4. MINHA COLEÇÃO (Final da página)
-st.header("⭐ Minha Coleção Particular")
-if st.session_state.colecao:
-    st.write("Itens guardados: " + ", ".join(st.ses
+# --- FAVORITOS ---
+elif tela == "Favoritos":
+    st.title("⭐ Meus Favoritos")
+    if st.session_state.favoritos:
+        for item in st.session_state.favoritos:
+            st.write(f"✅ {item}")
+    else:
+        st.write("Ainda não guardaste nenhuma rocha.")
