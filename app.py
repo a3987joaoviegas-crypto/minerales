@@ -1,66 +1,62 @@
 import streamlit as st
 
-# 1. Configuração da Página
-st.set_page_config(page_title="Laboratório Rochal", layout="wide", page_icon="⛏️")
+# Configuração da página
+st.set_page_config(page_title="Laboratório Rochal", layout="wide")
 
-# 2. Inicializar Favoritos
-if 'favs' not in st.session_state:
-    st.session_state.favs = []
+# Inicializar favoritos
+if 'colecao' not in st.session_state:
+    st.session_state.colecao = []
 
-# --- MENU LATERAL ---
-st.sidebar.title("⚒️ LAB ROCHAL")
-menu = st.sidebar.radio("Navegação:", ["🏠 Laboratório", "⭐ Meus Favoritos"])
+st.title("⚒️ Laboratório Rochal")
 
-# --- PÁGINA PRINCIPAL ---
-if menu == "🏠 Laboratório":
-    st.title("⛏️ Laboratório Rochal")
-    
-    # Seção 1: Tabela Periódica
-    st.header("⚛️ Tabela Periódica Geológica")
-    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Periodic_Table_by_Merck.png/1200px-Periodic_Table_by_Merck.png", use_container_width=True)
-    
-    st.divider()
+# 1. TABELA PERIÓDICA (No início)
+st.header("⚛️ Tabela Periódica dos Elementos")
+st.write("Estes são os elementos químicos que formam os minerais e as rochas.")
+st.image("https://upload.wikimedia.org/wikipedia/commons/4/4d/Periodic_Table_by_Merck.png", use_container_width=True)
 
-    # Seção 2: Biblioteca de Rochas e Minerais
-    st.header("📚 Biblioteca Geológica")
-    
-    itens = [
-        {"nome": "Basalto", "classe": "Ígnea", "pressao": "Baixa (Vulcânica)", "elementos": "Fe, Mg, Ca", "tempo": "Rápido", "img": "https://images.unsplash.com/photo-1515462277126-2dd0c162007a?w=600"},
-        {"nome": "Granito", "classe": "Ígnea", "pressao": "Alta (Plutónica)", "elementos": "Si, Al, K", "tempo": "Milhares de anos", "img": "https://images.unsplash.com/photo-1533038595788-da570932e604?w=600"},
-        {"nome": "Mármore", "classe": "Metamórfica", "pressao": "Alta", "elementos": "Carbonato de Cálcio", "tempo": "Milhões de anos", "img": "https://images.unsplash.com/photo-1620215175664-cb9a6f5b6103?w=600"},
-        {"nome": "Quartzo", "classe": "Mineral", "pressao": "Variável", "elementos": "Dióxido de Silício", "tempo": "Lento", "img": "https://images.unsplash.com/photo-1567095761054-7a02e69e5c43?w=600"}
-    ]
 
-    # Grelha de Exibição
-    for i in range(0, len(itens), 2):
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.subheader(itens[i]["nome"])
-            st.image(itens[i]["img"], use_container_width=True)
-            st.write(f"**Classe:** {itens[i]['classe']} | **🔥 Pressão:** {itens[i]['pressao']}")
-            st.write(f"**🧪 Química:** {itens[i]['elementos']} | **⏳ Tempo:** {itens[i]['tempo']}")
-            if st.button(f"⭐ Guardar {itens[i]['nome']}", key=itens[i]['nome']):
-                if itens[i]['nome'] not in st.session_state.favs:
-                    st.session_state.favs.append(itens[i]['nome'])
-                    st.toast(f"{itens[i]['nome']} guardado!")
+[Image of the periodic table showing chemical elements]
 
-        if i+1 < len(itens):
+
+st.divider()
+
+# 2. BIBLIOTECA E IDENTIFICADOR (Estilo Classes de Animais)
+st.header("📚 Identificador e Biblioteca Rochal")
+
+# Lista de Classes (como nos animais)
+classe = st.selectbox("Selecione a Classe Geológica:", 
+                     ["Todas", "Rochas Ígneas", "Rochas Metamórficas", "Rochas Sedimentares", "Minerais Silicatos"])
+
+# Dados (Minerais e Rochas juntos)
+dados = [
+    {"nome": "Basalto", "classe": "Rochas Ígneas", "pressao": "Baixa", "elementos": "Fe, Mg", "tempo": "Dias", "img": "https://images.unsplash.com/photo-1515462277126-2dd0c162007a?w=400"},
+    {"nome": "Mármore", "classe": "Rochas Metamórficas", "pressao": "Alta", "elementos": "Ca, C, O", "tempo": "Milhões de anos", "img": "https://images.unsplash.com/photo-1620215175664-cb9a6f5b6103?w=400"},
+    {"nome": "Arenito", "classe": "Rochas Sedimentares", "pressao": "Baixa", "elementos": "Si, O", "tempo": "Longo", "img": "https://images.unsplash.com/photo-1590218121117-0824961547a4?w=400"},
+    {"nome": "Quartzo", "classe": "Minerais Silicatos", "pressao": "Média", "elementos": "SiO2", "tempo": "Lento", "img": "https://images.unsplash.com/photo-1567095761054-7a02e69e5c43?w=400"}
+]
+
+# Filtragem e Exibição
+for item in dados:
+    if classe == "Todas" or item["classe"] == classe:
+        with st.container(border=True):
+            col1, col2 = st.columns([1, 2])
+            with col1:
+                st.image(item["img"], use_container_width=True)
             with col2:
-                st.subheader(itens[i+1]["nome"])
-                st.image(itens[i+1]["img"], use_container_width=True)
-                st.write(f"**Classe:** {itens[i+1]['classe']} | **🔥 Pressão:** {itens[i+1]['pressao']}")
-                st.write(f"**🧪 Química:** {itens[i+1]['elementos']} | **⏳ Tempo:** {itens[i+1]['tempo']}")
-                if st.button(f"⭐ Guardar {itens[i+1]['nome']}", key=itens[i+1]['nome']):
-                    if itens[i+1]['nome'] not in st.session_state.favs:
-                        st.session_state.favs.append(itens[i+1]['nome'])
-                        st.toast(f"{itens[i+1]['nome']} guardado!")
+                st.subheader(item["nome"])
+                st.write(f"**Classe:** {item['classe']}")
+                st.write(f"**Composição:** {item['elementos']}")
+                st.write(f"**Tempo de Formação:** {item['tempo']}")
+                if st.button(f"Adicionar à Coleção: {item['nome']}", key=item['nome']):
+                    if item['nome'] not in st.session_state.colecao:
+                        st.session_state.colecao.append(item['nome'])
+                        st.success(f"{item['nome']} guardado!")
 
-# --- PÁGINA FAVORITOS ---
-elif menu == "⭐ Meus Favoritos":
-    st.title("⭐ Minha Coleção")
-    if st.session_state.favs:
-        for f in st.session_state.favs:
-            st.write(f"### 💎 {f}")
-    else:
-        st.write("Mochila vazia.")
+st.divider()
+
+# 3. MINHA COLEÇÃO (Favoritos)
+st.header("⭐ Minha Coleção Particular")
+if st.session_state.colecao:
+    st.write(", ".join(st.session_state.colecao))
+else:
+    st.write("Nenhum exemplar selecionado.")
