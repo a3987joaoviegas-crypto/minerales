@@ -56,4 +56,3 @@ st.divider()
 st.header("⭐ Minha Coleção Particular")
 se st.session_state.colecao:
     st.write("Itens guardados: " + ", ".join(st.session_state.colecao))
-caso contrário:
