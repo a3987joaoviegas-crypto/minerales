@@ -55,4 +55,4 @@ st.divider()
 # 4. MINHA COLEÇÃO (Final da página)
 st.header("⭐ Minha Coleção Particular")
 if st.session_state.colecao:
-    st.write("Itens guardados: " + ", ".join(st.session_state.colecao))
+    st.write("Itens guardados: " + ", ".join(st.ses
